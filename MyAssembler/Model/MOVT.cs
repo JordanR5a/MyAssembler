@@ -28,10 +28,11 @@ namespace MyAssembler.Model
             context = context.Replace(rd, "").Trim();
 
             var imm16 = context.Substring(context.IndexOf("#") + 1);
-            var bytes = ConvertHexStringToByteArray(imm16);
-            bitArray = new BitArray(bytes);
+            bitArray = new BitArray(new[] { int.Parse(imm16, System.Globalization.NumberStyles.HexNumber) });
             var bits = new bool[16];
+            bitArray.Length = 16;
             bitArray.CopyTo(bits, 0);
+            bits = bits.Reverse().ToArray();
 
 
             var const1 = new bool[] { false, false, true, true };
@@ -42,7 +43,7 @@ namespace MyAssembler.Model
             result[2] = ToByte(destinationReg.Concat(bits.Skip(4).Take(4)).ToArray());
             result[3] = ToByte(bits.Skip(8).Take(8).ToArray());
 
-            return result;
+            return result.Reverse().ToArray();
         }
     }
 }

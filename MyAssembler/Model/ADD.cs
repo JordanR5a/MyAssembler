@@ -14,10 +14,20 @@ namespace MyAssembler.Model
         {
             var result = new byte[4];
 
-            var cond = context.Split(" ", 2)[0];
-            context = context.Replace(cond, "").Trim();
+            var preParams = context.Split(" ", 2)[0];
+            var cond = preParams.Substring(0, preParams.Length - 1);
+            var s = int.Parse(preParams.Last().ToString());
+            context = context.Replace(preParams, "").Trim();
 
             BitArray bitArray;
+
+            var rn = context.Split(",", 2)[0];
+            bitArray = new BitArray(new[] { int.Parse(rn) });
+            bitArray.Length = 4;
+            var operandReg = new bool[4];
+            bitArray.CopyTo(operandReg, 0);
+            operandReg = operandReg.Reverse().ToArray();
+            context = context.Replace(rn + ',', "").Trim();
 
             var rd = context.Split(",", 2)[0];
             bitArray = new BitArray(new[] { int.Parse(rd) });
@@ -27,22 +37,23 @@ namespace MyAssembler.Model
             destinationReg = destinationReg.Reverse().ToArray();
             context = context.Replace(rd, "").Trim();
 
-            var imm16 = context.Substring(context.IndexOf("#") + 1);
-            var bytes = ConvertHexStringToByteArray(imm16);
-            bitArray = new BitArray(bytes);
-            var bits = new bool[16];
-            bitArray.CopyTo(bits, 0);
+            var op = context.Substring(context.IndexOf("#") + 1);
+            bitArray = new BitArray(new[] { int.Parse(op, System.Globalization.NumberStyles.HexNumber) });
+            var operand = new bool[12];
+            bitArray.Length = 12;
+            bitArray.CopyTo(operand, 0);
+            operand = operand.Reverse().ToArray();
 
 
-            var const1 = new bool[] { false, false, true, true };
-            var const2 = new bool[] { false, false, false, false };
+            var const1 = new bool[] { false, false, true, false };
+            var const2 = new bool[] { true, false, false };
 
             result[0] = ToByte(Conditionals[cond].Concat(const1).ToArray());
-            result[1] = ToByte(const2.Concat(bits.Take(4)).ToArray());
-            result[2] = ToByte(destinationReg.Concat(bits.Skip(4).Take(4)).ToArray());
-            result[3] = ToByte(bits.Skip(8).Take(8).ToArray());
+            result[1] = ToByte(const2.Concat(new[] { Convert.ToBoolean(s) }).Concat(destinationReg).ToArray());
+            result[2] = ToByte(operandReg.Concat(operand.Take(4)).ToArray());
+            result[3] = ToByte(operand.Skip(4).Take(8).ToArray());
 
-            return result;
+            return result.Reverse().ToArray();
         }
     }
 }

@@ -34,21 +34,6 @@ namespace MyAssembler.Model
             return result;
         }
 
-        //https://stackoverflow.com/questions/61210068/hex-string-to-bool-c-sharp
-        protected byte[] ConvertHexStringToByteArray(string hexString)
-        {
-            if (hexString.Length % 2 != 0) hexString.Insert(0, "0");
-
-            byte[] data = new byte[hexString.Length / 2];
-            for (int index = 0; index < data.Length; index++)
-            {
-                string byteValue = hexString.Substring(index * 2, 2);
-                data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-            }
-
-            return data;
-        }
-
         public abstract string Type { get; }
         public abstract byte[] Build(string context);
     }

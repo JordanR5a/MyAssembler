@@ -3,7 +3,7 @@ MOVWAL 4,#0
 
 MOVTAL 4,#3F20
 
-ADD %2 %4 0x08
+ADDAL0 2,4,#08
 
 LDR %3 (R2)
 
