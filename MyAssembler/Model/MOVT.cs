@@ -10,12 +10,12 @@ namespace MyAssembler.Model
     {
         public override string Type => "MOVT";
 
-        public override byte[] Build(string context)
+        public override byte[] Build(string context, bool debug)
         {
             var result = new byte[4];
 
             var cond = context.Split(" ", 2)[0];
-            context = context.Replace(cond, "").Trim();
+            context = context.Remove(0, cond.Length);
 
             BitArray bitArray;
 
@@ -25,7 +25,7 @@ namespace MyAssembler.Model
             var destinationReg = new bool[4];
             bitArray.CopyTo(destinationReg, 0);
             destinationReg = destinationReg.Reverse().ToArray();
-            context = context.Replace(rd, "").Trim();
+            context = context.Remove(0, rd.Length);
 
             var imm16 = context.Substring(context.IndexOf("#") + 1);
             bitArray = new BitArray(new[] { int.Parse(imm16, System.Globalization.NumberStyles.HexNumber) });
@@ -42,8 +42,10 @@ namespace MyAssembler.Model
             result[1] = ToByte(const2.Concat(bits.Take(4)).ToArray());
             result[2] = ToByte(destinationReg.Concat(bits.Skip(4).Take(4)).ToArray());
             result[3] = ToByte(bits.Skip(8).Take(8).ToArray());
+            result = result.Reverse().ToArray();
 
-            return result.Reverse().ToArray();
+            if (debug) Console.WriteLine(ShowWork(Type, result));
+            return result;
         }
     }
 }

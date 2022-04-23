@@ -12,7 +12,7 @@ namespace MyAssembler
             //File.WriteAllBytes("kernal7.img", bytes);
 
 
-            new Assembler().Run("cmds.txt", "kernal7.img");
+            new Assembler(true).Run("cmds.txt", "kernal7.img");
         }
     }
 }

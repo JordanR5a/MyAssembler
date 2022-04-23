@@ -9,6 +9,13 @@ namespace MyAssembler.Model
 {
     public class Assembler
     {
+        private bool Debug;
+
+        public Assembler(bool debug)
+        {
+            Debug = debug;
+        }
+
         //https://grabthiscode.com/csharp/c-get-all-child-classes-of-a-class
         Type[] GetInheritedClasses(Type MyType)
         {
@@ -25,7 +32,7 @@ namespace MyAssembler.Model
                 foreach (var type in GetInheritedClasses(typeof(Command)))
                 {
                     var command = type.GetProperty("Type").GetGetMethod().Invoke(Activator.CreateInstance(type), null).ToString();
-                    if (cmd.ToUpper().Contains(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command, "") }));
+                    if (cmd.ToUpper().Contains(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command, ""), Debug }));
                 }
             }
 

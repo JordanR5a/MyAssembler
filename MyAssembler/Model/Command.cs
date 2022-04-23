@@ -34,7 +34,15 @@ namespace MyAssembler.Model
             return result;
         }
 
+        protected static string ShowWork(string type, byte[] array)
+        {
+            var str = new StringBuilder($"{type}: ");
+            foreach (var b in array) str.Append(Convert.ToHexString(new[] { b })).Append(", ");
+            str.Remove(str.ToString().LastIndexOf(","), 2);
+            return str.ToString();
+        }
+
         public abstract string Type { get; }
-        public abstract byte[] Build(string context);
+        public abstract byte[] Build(string context, bool debug);
     }
 }

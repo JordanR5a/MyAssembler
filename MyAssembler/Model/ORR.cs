@@ -6,9 +6,9 @@ using System.Text;
 
 namespace MyAssembler.Model
 {
-    public class ADD : Command
+    public class ORR : Command
     {
-        public override string Type => "ADD";
+        public override string Type => "ORR";
 
         public override byte[] Build(string context, bool debug)
         {
@@ -45,7 +45,7 @@ namespace MyAssembler.Model
             operand = operand.Reverse().ToArray();
 
 
-            var const1 = new bool[] { false, false, true, false };
+            var const1 = new bool[] { false, false, true, true };
             var const2 = new bool[] { true, false, false };
 
             result[0] = ToByte(Conditionals[cond].Concat(const1).ToArray());
