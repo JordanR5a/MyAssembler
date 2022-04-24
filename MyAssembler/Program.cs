@@ -8,10 +8,6 @@ namespace MyAssembler
     {
         static void Main(string[] args)
         {
-            //byte[] bytes = new byte[5];
-            //File.WriteAllBytes("kernal7.img", bytes);
-
-
             new Assembler(true).Run("cmds.txt", "kernal7.img");
         }
     }

@@ -9,6 +9,7 @@ namespace MyAssembler.Model
 {
     public class Assembler
     {
+        //If data from prev command needed, give this class static variable which command hildren can use.
         private bool Debug;
 
         public Assembler(bool debug)
@@ -32,10 +33,10 @@ namespace MyAssembler.Model
                 foreach (var type in GetInheritedClasses(typeof(Command)))
                 {
                     var command = type.GetProperty("Type").GetGetMethod().Invoke(Activator.CreateInstance(type), null).ToString();
-                    if (cmd.ToUpper().Contains(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command, ""), Debug }));
+                    if (cmd.Split(" ", 2)[0].ToUpper().Equals(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command + " ", ""), Debug }));
                 }
             }
-
+            File.WriteAllBytes($"../../../Resources/{outputFileName}", bytes.ToArray());
         }
     }
 }
