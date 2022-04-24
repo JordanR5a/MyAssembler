@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MyAssembler.Model
 {
-    public class LDR : Command
+    public class STR : Command
     {
-        public override string Type => "LDR";
+        public override string Type => "STR";
 
         public override byte[] Build(string context, bool debug)
         {
@@ -34,7 +35,7 @@ namespace MyAssembler.Model
             bitArray.CopyTo(baseRegister, 0);
             baseRegister = baseRegister.Reverse().ToArray();
 
-            var const1 = new bool[] { false, true, false, false, false, false, false, true };
+            var const1 = new bool[] { false, true, false, false, false, false, false, false };
             var offset = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
 
             result[0] = ToByte(Conditionals[cond].Concat(const1.Take(4)).ToArray());
@@ -46,6 +47,5 @@ namespace MyAssembler.Model
             if (debug) Console.WriteLine(ShowWork(Type, result));
             return result;
         }
-
     }
 }
