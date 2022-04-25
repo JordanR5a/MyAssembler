@@ -14,8 +14,13 @@ namespace MyAssembler.Model
         {
             var result = new byte[4];
 
-            var cond = context.Split(" ", 2)[0];
-            context = context.Remove(0, cond.Length);
+            string cond;
+            if (context.Contains(" "))
+            {
+                cond = context.Split(" ", 2)[0];
+                context = context.Remove(0, cond.Length);
+            }
+            else cond = "AL";
 
             BitArray bitArray;
 

@@ -15,10 +15,24 @@ namespace MyAssembler.Model
         {
             var result = new byte[4];
 
-            var preParams = context.Split(" ", 2)[0];
-            var cond = preParams.Substring(0, preParams.Length - 1);
-            var s = int.Parse(preParams.Last().ToString());
-            context = context.Remove(0, preParams.Length);
+            bool[] cond = Conditionals["AL"];
+            bool s = false;
+            if (context.Contains(" "))
+            {
+                if (context.ToUpper().StartsWith("S"))
+                {
+                    s = true;
+                    context = context.Remove(0, 1);
+                }
+
+                foreach (var con in Conditionals)
+                    if (context.StartsWith(con.Key))
+                    {
+                        cond = con.Value;
+                        context = context.Remove(0, con.Key.Length);
+                    }
+                context = context.Trim();
+            }
 
             BitArray bitArray;
 
@@ -49,8 +63,8 @@ namespace MyAssembler.Model
             var const1 = new bool[] { false, false, true, false };
             var const2 = new bool[] { false, true, false };
 
-            result[0] = ToByte(Conditionals[cond].Concat(const1).ToArray());
-            result[1] = ToByte(const2.Concat(new[] { Convert.ToBoolean(s) }).Concat(destinationReg).ToArray());
+            result[0] = ToByte(cond.Concat(const1).ToArray());
+            result[1] = ToByte(const2.Concat(new[] { s }).Concat(destinationReg).ToArray());
             result[2] = ToByte(operandReg.Concat(operand.Take(4)).ToArray());
             result[3] = ToByte(operand.Skip(4).Take(8).ToArray());
             result = result.Reverse().ToArray();

@@ -9,7 +9,6 @@ namespace MyAssembler.Model
 {
     public class Assembler
     {
-        //If data from prev command needed, give this class static variable which command hildren can use.
         private bool Debug;
 
         public Assembler(bool debug)
@@ -20,7 +19,7 @@ namespace MyAssembler.Model
         //https://grabthiscode.com/csharp/c-get-all-child-classes-of-a-class
         Type[] GetInheritedClasses(Type MyType)
         {
-            return Assembly.GetAssembly(MyType).GetTypes().Where(TheType => TheType.IsClass && !TheType.IsAbstract && TheType.IsSubclassOf(MyType)).ToArray();
+            return Assembly.GetAssembly(MyType).GetTypes().Where(TheType => TheType.IsClass && !TheType.IsAbstract && TheType.IsSubclassOf(MyType)).OrderByDescending(x => x.Name).ToArray();
         }
 
         public void Run(string cmdFileName, string outputFileName)
@@ -33,7 +32,7 @@ namespace MyAssembler.Model
                 foreach (var type in GetInheritedClasses(typeof(Command)))
                 {
                     var command = type.GetProperty("Type").GetGetMethod().Invoke(Activator.CreateInstance(type), null).ToString();
-                    if (cmd.Split(" ", 2)[0].ToUpper().Equals(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command + " ", ""), Debug }));
+                    if (cmd.Split(" ", 2)[0].ToUpper().StartsWith(command)) bytes.AddRange((byte[])type.GetMethod("Build").Invoke(Activator.CreateInstance(type), new object[] { cmd.Replace(command, "").Trim(), Debug }));
                 }
             }
             File.WriteAllBytes($"../../../Resources/{outputFileName}", bytes.ToArray());

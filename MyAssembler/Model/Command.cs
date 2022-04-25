@@ -8,6 +8,7 @@ namespace MyAssembler.Model
 {
     public abstract class Command
     {
+        //TODO: binary replaced with symbol letter, cond AL can be assumed when not present, and all cond are flesh with command
         protected static Dictionary<string, bool[]> Conditionals = new Dictionary<string, bool[]>()
         {
             { "AL", new bool[] { true, true, true, false } },

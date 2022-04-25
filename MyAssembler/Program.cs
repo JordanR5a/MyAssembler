@@ -8,7 +8,7 @@ namespace MyAssembler
     {
         static void Main(string[] args)
         {
-            new Assembler(true).Run("cmds.txt", "kernal7.img");
+            new Assembler(true).Run("cmds.txt", "kernel7.img");
         }
     }
 }

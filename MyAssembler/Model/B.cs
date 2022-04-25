@@ -15,9 +15,24 @@ namespace MyAssembler.Model
         {
             var result = new byte[4];
 
-            var preParams = context.Split(" ", 2)[0];
-            var cond = preParams.Substring(0, preParams.Length - 1);
-            var l = int.Parse(preParams.Last().ToString());
+            bool[] cond = Conditionals["AL"];
+            bool l = false;
+            if (context.Contains(" "))
+            {
+                if (context.ToUpper().StartsWith("L"))
+                {
+                    l = true;
+                    context = context.Remove(0, 1);
+                }
+
+                foreach (var con in Conditionals)
+                    if (context.StartsWith(con.Key))
+                    {
+                        cond = con.Value;
+                        context = context.Remove(0, con.Key.Length);
+                    }
+                context = context.Trim();
+            }
 
             BitArray bitArray;
             var hex = context.Substring(context.IndexOf("#") + 1);
@@ -29,7 +44,7 @@ namespace MyAssembler.Model
 
             var const1 = new bool[] { true, false, true };
 
-            result[0] = ToByte(Conditionals[cond].Concat(const1).Concat(new[] { Convert.ToBoolean(l) }).ToArray());
+            result[0] = ToByte(cond.Concat(const1).Concat(new[] { l }).ToArray());
             result[1] = ToByte(offset.Take(8).ToArray());
             result[2] = ToByte(offset.Skip(8).Take(8).ToArray());
             result[3] = ToByte(offset.Skip(16).Take(8).ToArray());
