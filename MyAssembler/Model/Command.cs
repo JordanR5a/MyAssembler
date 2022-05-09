@@ -8,12 +8,14 @@ namespace MyAssembler.Model
 {
     public abstract class Command
     {
-        //TODO: binary replaced with symbol letter, cond AL can be assumed when not present, and all cond are flesh with command
+        public static Dictionary<string, int> Subroutines;
         protected static Dictionary<string, bool[]> Conditionals = new Dictionary<string, bool[]>()
         {
             { "AL", new bool[] { true, true, true, false } },
             { "PL", new bool[] { false, true, false, true } }
         };
+
+        public int line;
 
         //https://stackoverflow.com/questions/24322417/how-to-convert-bool-array-in-one-byte-and-later-convert-back-in-bool-array
         protected static byte ToByte(bool[] bits)
