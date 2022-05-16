@@ -10,6 +10,7 @@ namespace MyAssembler.Model
     public class Assembler
     {
         private static string SUB_RETURN = "BX 14";
+        private static string STACK_INITIALIZE = "MOVW 13,#0";
         private bool Debug;
 
         public Assembler(bool debug)
@@ -45,9 +46,10 @@ namespace MyAssembler.Model
             return subs;
         }
 
+
         public void Run(string cmdFileName, string outputFileName)
         {
-            string[] cmds = File.ReadAllLines("../../../Resources/" + cmdFileName).Where(c => c.Length != 0).ToArray();
+            string[] cmds = File.ReadAllLines("../../../Resources/" + cmdFileName).Where(c => c.Length != 0).Prepend(STACK_INITIALIZE).ToArray();
 
             Command.Subroutines = GetSubroutines(cmds);
             List<byte> bytes = new List<byte>();
